@@ -82,7 +82,7 @@ export const CreatePost = () => {
                     <div className="Post__window">
                         <div className="Post__info">
                             {errors.content && <p style={{ color: 'red' }}>{errors.content.message} </p>}
-                            < img className="Post_img" src="AR.jpg" alt="ar" />
+                            < img className="Post_img" src= {user.photoURL || "AR.jpg"} alt="ar" />
                             <span className="Post__title">Create a Post</span>
                             <button className="Post__close" onClick={changeDoPost}> &times; </button>
                         </div>

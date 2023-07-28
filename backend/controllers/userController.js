@@ -12,7 +12,7 @@ const loginUser = async (req, res) => {
     try{
         const user = await User.signin(email, password) ;
         const token = createToken(user._id , user.username);
-        res.status(200).json({token , username: user.username , _id : user._id})
+        res.status(200).json({token , username: user.username , _id : user._id , photoURL : user.photoURL})
 
     }catch(e){
         res.status(400).json({error : e.message })
@@ -21,13 +21,14 @@ const loginUser = async (req, res) => {
 
 
 const registerUser = async (req, res) => {
+
     const { email, password , username , photoURL } = req.body;
     try{
         // Create User object
         const user = await User.signup(email, password , username , photoURL ) ;
         // Create Token
         const token = createToken(user._id , user.username);
-        res.status(200).json({token , username  , _id : user._id})
+        res.status(200).json({token , username  , _id : user._id , photoURL : photoURL})
     }catch(e){
         res.status(400).json({error : e.message })
     }
@@ -37,7 +38,8 @@ const registerUser = async (req, res) => {
 const getUser = async (req, res) =>{
         try{
             const user = await User.findOne({_id : req.params.id});
-            res.status(200).json({ user })
+            res.status(200).json( {user} )
+            console.log(user);
         }catch(e){
             res.status(400).json({error : e.message })
         }

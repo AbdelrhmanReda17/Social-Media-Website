@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { useRegister } from "../hooks/useRegister";
 
 const Register = () => {
+  const [ image , setImage ] = useState<any>("");
   const {signup , error ,isLoading} = useRegister();
   const schema = yup.object().shape({
     username: yup.string().required("You must add a username"),
@@ -23,9 +24,18 @@ const Register = () => {
   });
 
   const onSubmit = async (data : any) => {
-    await signup(data.email , data.password ,  data.photo[0].name , data.username );
+    await signup(data.email , data.password ,  image , data.username );
   };
-
+  const ConverttoBase64 = (e : any) =>{
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () =>{
+      setImage(reader.result); // Image ..
+    }
+    reader.onerror = () => {
+      console.log("Error reading");
+    }
+  }
   return (
     <div>
       <h1>Register</h1>
@@ -47,7 +57,7 @@ const Register = () => {
 
         <div>
           <label className="RL">Upload Photo:</label>
-          <input className="RL" type="file" {...register("photo")} accept="image/*" />
+          <input className="RL" type="file" {...register("photo")} accept="image/*" onChange={ConverttoBase64}/>
         </div>
         <button disabled={isLoading} className="RL" type="submit">Register</button>
         {error && <div className="error">{error}</div>}

@@ -98,7 +98,7 @@ export const Comment = () => {
     <>
       <div className="Post-Comments">
         <div className="div1">
-          <img src="AR.jpg" alt="ARAR" />
+          <img src={user.photoURL || "AR.jpg"} alt="ARAR" />
         </div>
         <div className="div2">
           <input

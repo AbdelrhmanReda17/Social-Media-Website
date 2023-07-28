@@ -15,7 +15,8 @@ const Navbar = () => {
                     <h1>Social Media </h1>
                 </Link>
                 <nav>
-                    { user && <div>
+                    { user && <div className="User-Details">
+                        <img className="user-Img" src={user.photoURL} width="50" height="50" alt="AR" />
                         <span>{ user.username }</span>
                         <button onClick={handleClick}>Log out</button>
                     </div> }

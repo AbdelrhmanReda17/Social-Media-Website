@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useContext, useEffect, useReducer, useState } from "react";
 import { AppContext, FULLPOST } from "../pages/main";
 import { ShowLikes as ShowLikesModel } from "./likemodel";
 import { useAuthContext } from "../hooks/userAuthContext";
@@ -61,12 +61,35 @@ export const CommentContext = createContext<any>(0);
 
 export const POST = (props: Props) => {
   const { user } = useAuthContext();
-
-  const { PostsList, setPostsList } = useContext(AppContext);
-
+  const [ PostUser , setPostUser ] = useState<any> ();
+  const { PostsList, setPostsList } = useContext(AppContext);  
   const { pts } = props;
-  // const [ViewLikes, setViewLikes] = useState<Boolean>(false);
-  // const [ViewComments, setViewComments] = useState<Boolean>(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`users/${pts.post.userId}`, { headers: { 'Authorization': `Bearer ${user.token}` } });
+        if (response.ok) {
+          const user = await response.json();
+          return user;
+        } else {
+          console.error("Error:", response.status, response.statusText);
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        return null;
+      }
+    };
+  
+    const getUserData = async () => {
+      const user = await fetchUser();
+      if (user) {
+        setPostUser(user);
+      }
+    };
+  
+    getUserData();
+  }, [user.token, setPostUser, pts.post.userId ]);
   const [state, dispatch] = useReducer(reducer, { ViewLikes: false, ViewComments: false });
   const addLike = async () => {
     try {
@@ -142,7 +165,7 @@ export const POST = (props: Props) => {
       </LikeContext.Provider>
       <div className="Post-Container">
         <div className="Post-Info">
-          <img src="AR.jpg" alt="ARAR" />
+          <img src={PostUser?.user.photoURL || "user.jpg"} alt="ARAR" />
           <div className="Post-InfoTexts">
             <p className="first">{pts.post.username}</p>
             <p className="last"> {getTimeDifferenceFromNow(pts.post.createdAt)} </p>

@@ -594,7 +594,16 @@ form.register, form.login {
 form label {
   text-align: initial;
 }
-
+.user-Img{
+  margin: 0px;
+  padding: 0px;
+  border-radius: 25px;
+}
+.User-Details{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 nav {
   display: flex;
   align-items: center;
