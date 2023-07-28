@@ -11,14 +11,14 @@ const Navbar = () => {
     return (
         <header>
             <div className="navbar">
-                <Link to="/">
-                    <h1>Social Media </h1>
-                </Link>
+                    <Link to="/">
+                        <h1>Social Media </h1>
+                    </Link>
                 <nav>
                     { user && <div className="User-Details">
                         <img className="user-Img" src={user.photoURL} width="50" height="50" alt="AR" />
                         <span>{ user.username }</span>
-                        <button onClick={handleClick}>Log out</button>
+                        <button className="LOGOUT" onClick={handleClick}>Log out</button>
                     </div> }
                     {!user && 
                     <div className="links">

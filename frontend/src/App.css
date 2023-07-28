@@ -44,6 +44,10 @@ header a {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   font-size: 15px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
 }
 
 .LogoutBtn:hover{
@@ -598,6 +602,11 @@ form label {
   margin: 0px;
   padding: 0px;
   border-radius: 25px;
+  outline: 0px solid #004182;
+  transition: outline 0.1s ease 0.12ms;
+}
+.user-Img:hover{
+  outline: 2px solid #001C30;
 }
 .User-Details{
   display: flex;
@@ -610,6 +619,24 @@ nav {
 }
 nav a {
   margin-left: 10px;
+
+}
+header a h1{
+  letter-spacing: 0;
+  transition: letter-spacing 0.3s ease 0.12ms;
+  -webkit-transition: letter-spacing 0.3s ease 0.12ms;
+  -moz-transition: letter-spacing 0.3s ease 0.12ms;
+  -ms-transition: letter-spacing 0.3s ease 0.12ms;
+  -o-transition: letter-spacing 0.3s ease 0.12ms;
+}
+header a h1:hover{
+  letter-spacing : 1.5px;
+}
+
+.LOGOUT:hover {
+  color: white;
+  background: #001C30;
+  transition: all 0.5s;
 }
 nav button {
   background: #fff;
@@ -621,4 +648,10 @@ nav button {
   cursor: pointer;
   font-size: 1em;
   margin-left : 10px;
+}
+
+.User-Details span{
+  transition: font-weight 0.1s ease 0.12ms;
+  color: #001C30 ;
+  font-weight: 700;
 }

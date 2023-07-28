@@ -14,7 +14,6 @@ const getComments = async (req, res) => {
           res.status(200).json(comments);
         })
         .catch((error) => {
-            console.log("AR")
             CommentFail(res, "No Posts With this Id");
         });
     }else{
