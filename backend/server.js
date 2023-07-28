@@ -5,6 +5,7 @@ require('dotenv').config();
 //Routes for express
 const postRoutes = require("./routes/postRoutes");
 const likeRoutes = require("./routes/likeRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // Express app
 const app = express();
@@ -36,3 +37,4 @@ app.get('/', (req, res) =>res.json({mssg:"Hello"}));
 
 app.use('/posts/',postRoutes);
 app.use('/likes/',likeRoutes);
+app.use('/users/',userRoutes);

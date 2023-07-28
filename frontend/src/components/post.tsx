@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, useState } from "react";
 import { AppContext, FULLPOST } from "../pages/main";
-import axios from "axios";
 import { ShowLikes as ShowLikesModel } from "./likemodel";
+import { useAuthContext } from "../hooks/userAuthContext";
 
 interface Props {
   pts: FULLPOST;
@@ -28,7 +28,7 @@ function getTimeDifferenceFromNow(dateStr: string): string {
   const hoursDiff = Math.floor(minutesDiff / 60);
   const daysDiff = Math.floor(hoursDiff / 24);
   const weeksDiff = Math.floor(daysDiff / 7);
-  const pluralize = (value: number, unit: string) => value + unit + ' ' ;
+  const pluralize = (value: number, unit: string) => value + unit + ' ';
   if (secondsDiff < 60) {
     return pluralize(secondsDiff, ' sec ago');
   } else if (minutesDiff < 60) {
@@ -46,7 +46,7 @@ function getTimeDifferenceFromNow(dateStr: string): string {
 }
 
 
-const reducer = (state : State , action : Action) => {
+const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "SHOW_LIKES":
       return { ...state, ViewLikes: !state.ViewLikes };
@@ -56,9 +56,11 @@ const reducer = (state : State , action : Action) => {
       return state;
   }
 }
-  export const LikeContext = createContext<any>(0);
+export const LikeContext = createContext<any>(0);
 
 export const POST = (props: Props) => {
+  const { user } = useAuthContext();
+
   const { PostsList, setPostsList } = useContext(AppContext);
 
   const { pts } = props;
@@ -67,10 +69,19 @@ export const POST = (props: Props) => {
   const [state, dispatch] = useReducer(reducer, { ViewLikes: false, ViewComments: false });
   const addLike = async () => {
     try {
-      await axios.post('/likes/', { userId: "1", postId: pts.post._id });
+      await fetch('/likes/',
+        {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          },
+          body: JSON.stringify({ userId: `${user._id}`, postId: pts.post._id })
+        }
+      );
       const updatedPostsList = PostsList.map((post: FULLPOST) => {
         if (post.post._id === pts.post._id) {
-          const newLike = { userId: '1', postId: post.post._id };
+          const newLike = { userId: `${user._id}`, postId: post.post._id };
           return { ...post, likes: [...post.likes, newLike] };
         }
         return post;
@@ -80,18 +91,27 @@ export const POST = (props: Props) => {
       console.log(err);
     }
   };
-  const hasUserLiked = pts.likes?.find((like) => like.userId === "1");
+  const hasUserLiked = pts.likes?.find((like) => like.userId === `${user._id}`);
 
   const removeLike = async () => {
     try {
       const data = {
-        userId: "1",
+        userId: `${user._id}`,
         postId: pts.post._id,
       };
-      await axios.delete(`/likes/`, { data });
+      await fetch('/likes/',
+      {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify(data)
+      }
+    );
       // Remove Like Form PostLists
       setPostsList(() =>
-      PostsList.map((post: FULLPOST) => {
+        PostsList.map((post: FULLPOST) => {
           if (post.post._id === pts.post._id) {
             const updatedLikes = post.likes.filter(
               (like) => like.userId !== data.userId || like.postId !== data.postId
@@ -117,7 +137,7 @@ export const POST = (props: Props) => {
   return (
     <>
       <LikeContext.Provider value={{ ShowLikes, pts }}>
-            {state.ViewLikes && <ShowLikesModel />}
+        {state.ViewLikes && <ShowLikesModel />}
       </LikeContext.Provider>
       <div className="Post-Container">
         <div className="Post-Info">
@@ -134,7 +154,7 @@ export const POST = (props: Props) => {
             <button className="Post-ViewBtns" > 0 Comments</button>
           </div>
           <div className="Post-Buttons">
-            <button onClick={ !hasUserLiked ? addLike : removeLike} > {!hasUserLiked ? <>&#128077;</> : <>&#128078;</> }</button>
+            <button onClick={!hasUserLiked ? addLike : removeLike} > {!hasUserLiked ? <>&#128077;</> : <>&#128078;</>}</button>
             <button > Comments </button>
           </div>
         </div>

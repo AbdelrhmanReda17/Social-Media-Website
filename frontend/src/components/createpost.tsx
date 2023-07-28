@@ -1,23 +1,26 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
 import StartPost from "./startpost";
+import { useAuthContext } from "../hooks/userAuthContext";
+import { FieldError } from "react-hook-form";
+import { AppContext , Like } from "../pages/main";
 
 interface createFormData {
     content: string
 }
 
 export const CreatePost = () => {
-
+    const { user } = useAuthContext();
     const formInput = useRef(null);
+    const { PostsList, setPostsList } = useContext(AppContext);
 
     const schema = yup.object().shape({
         content: yup.string().required("You must add a content"),
     });
 
-    const { register, handleSubmit, reset, formState: { errors }, } = useForm<createFormData>({
+    const { register, handleSubmit, reset, setError ,formState: { errors }, } = useForm<createFormData>({
         resolver: yupResolver(schema),
     });
 
@@ -27,24 +30,43 @@ export const CreatePost = () => {
         reset();
         setDoPost(!doPost);
     };
-
-    const submitPost = async (data : createFormData) =>{
+    const submitPost = async (data: createFormData) => {
+        if (!user) {
+            if (!errors.content) {
+              errors.content = {} as FieldError;
+            }
+            setError("content", {
+                type: "manual",
+                message: "You must be logged in",
+            });
+            return;
+        }
         reset();
-        const newPost = {
-          content: data.content,
-          userId: "1",
-          username: "Abdelrhman Reda",
-        };
-        try{
-            await axios.post('/posts/', newPost);
-        }catch(error){
+        try {
+            const NPOST = await fetch("/posts", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify( {
+                        content: data.content,
+                        userId: `${user._id}`,
+                        username: `${user.username}`,
+                } )
+              });
+            const createdPost = await NPOST.json();
+            setPostsList((prevPostsList : any) => [{ post: createdPost.NewPost, likes: [] as Like[] } , ...prevPostsList ]);
+        } catch (error) {
             console.error("Error fetching Posts:", error);
         }
+        changeDoPost();            
+
     }
 
     return (
         <div>
-            <StartPost changeDoPost = {changeDoPost} / >
+            <StartPost changeDoPost={changeDoPost} />
             {doPost && (
                 <form
                     className="Post"
@@ -59,7 +81,7 @@ export const CreatePost = () => {
                     <div className="Post__window">
                         <div className="Post__info">
                             {errors.content && <p style={{ color: 'red' }}>{errors.content.message} </p>}
-                            < img className="Post_img" src="AR.jpg"alt="ar" />
+                            < img className="Post_img" src="AR.jpg" alt="ar" />
                             <span className="Post__title">Create a Post</span>
                             <button className="Post__close" onClick={changeDoPost}> &times; </button>
                         </div>

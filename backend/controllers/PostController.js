@@ -29,6 +29,7 @@ const getPost = async (req, res) => {
 // Create a new post
 const createPost = async (req, res) => {
   const { userId, username, content } = req.body;
+  console.log( username , userId , content , req.body  );
   try {
     const NewPost = await Post.create({ userId, username, content });
     res.status(200).json({ NewPost });

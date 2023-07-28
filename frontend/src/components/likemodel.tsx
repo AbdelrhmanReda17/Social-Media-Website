@@ -1,11 +1,11 @@
 import { LikeContext } from "./post";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { LikeComp } from "./Like"
 
 
-export const ShowLikes = () => {
-  const { ShowLikes , pts } = useContext(LikeContext);
 
+export const ShowLikes =  () => {
+  const { ShowLikes , pts } = useContext(LikeContext);
   return (
     <div className="Likes"
       onClick={(event) => {

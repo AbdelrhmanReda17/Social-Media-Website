@@ -1,4 +1,4 @@
-const Like = require("../models/LikeModel");
+const Like = require("../models/likeModel");
 const mongoose = require("mongoose");
 
 const LikeFail = (res, errormsg) => {

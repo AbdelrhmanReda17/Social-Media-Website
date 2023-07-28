@@ -1,4 +1,5 @@
 const express = require('express');
+const requireAuth = require('../middleware/requireAuth');
 const {
     getLikes, 
     createLike, 
@@ -7,6 +8,8 @@ const {
   
 const router = express.Router()
 
+// Require Auth to get access to Post Routes
+router.use(requireAuth);
 
 // Get all a post likes
 router.get('/:id',getLikes)
