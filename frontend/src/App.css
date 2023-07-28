@@ -503,7 +503,6 @@ header a {
 .Comment-User{
   font-weight: 600;
   color: #001C30;
-  background-color: #eeeeee;
   width: 100%;
   text-align: initial;
 }
@@ -515,7 +514,10 @@ header a {
   width: 100%;
   height: 100%;
   justify-items: start;
-  box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.08);
+}
+.Comment-Details > div span {
+  margin-left: 15px;
+  margin-right: 15px;
 }
 .Comment-Details>div{
   width: 100%;
@@ -524,8 +526,11 @@ header a {
   display: grid;
   align-items: center;
   justify-items: start;
+  line-break: anywhere;
 }
-
+.Comment-Info{
+margin-left:10px
+}
 .Comment-Details div:first-of-type{
   border-bottom: 2px solid white;
   display: grid;
@@ -538,6 +543,12 @@ header a {
   color: #a19f9f;
 }
 
+.Comment-D1{
+  border-radius: 25px 25px 0px 0px;
+}
+.Comment-D2{
+  border-radius:  0px 0px 25px 25px;
+}
 
 .RL {
   display: block;

@@ -4,7 +4,7 @@ const {
     getLikes, 
     createLike, 
     deleteLike,
-  } = require('../controllers/LikeController');
+  } = require('../controllers/likeController');
   
 const router = express.Router()
 

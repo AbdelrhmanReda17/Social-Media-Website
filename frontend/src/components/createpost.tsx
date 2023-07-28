@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import StartPost from "./startpost";
 import { useAuthContext } from "../hooks/userAuthContext";
 import { FieldError } from "react-hook-form";
-import { AppContext , Like } from "../pages/main";
+import { AppContext , Comment, Like } from "../pages/main";
 
 interface createFormData {
     content: string
@@ -56,7 +56,8 @@ export const CreatePost = () => {
                 } )
               });
             const createdPost = await NPOST.json();
-            setPostsList((prevPostsList : any) => [{ post: createdPost.NewPost, likes: [] as Like[] } , ...prevPostsList ]);
+            setPostsList((prevPostsList : any) => [{ post: createdPost.NewPost, likes: [] as Like[] , comments: [] as Comment[] } , ...prevPostsList ]);
+            console.log("ARARAr");
         } catch (error) {
             console.error("Error fetching Posts:", error);
         }

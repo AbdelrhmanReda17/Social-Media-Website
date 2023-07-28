@@ -35,12 +35,13 @@ const registerUser = async (req, res) => {
 };
 
 const getUser = async (req, res) =>{
-    try{
-        const user = await User.findOne({_id : req.params.id});
-        res.status(200).json({ user })
-    }catch(e){
-        res.status(400).json({error : e.message })
-    }
+        try{
+            const user = await User.findOne({_id : req.params.id});
+            res.status(200).json({ user })
+        }catch(e){
+            res.status(400).json({error : e.message })
+        }
+
 }
 
 module.exports = {

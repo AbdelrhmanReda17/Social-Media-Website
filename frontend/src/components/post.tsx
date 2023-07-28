@@ -2,7 +2,7 @@ import { createContext, useContext, useReducer, useState } from "react";
 import { AppContext, FULLPOST } from "../pages/main";
 import { ShowLikes as ShowLikesModel } from "./likemodel";
 import { useAuthContext } from "../hooks/userAuthContext";
-
+import { Comment as CommentComponent } from "./comment";
 interface Props {
   pts: FULLPOST;
 }
@@ -16,7 +16,7 @@ interface Action {
   type: string;
 }
 
-function getTimeDifferenceFromNow(dateStr: string): string {
+export function getTimeDifferenceFromNow(dateStr: string): string {
   if (!dateStr) {
     return 'Invalid date format';
   }
@@ -57,6 +57,7 @@ const reducer = (state: State, action: Action) => {
   }
 }
 export const LikeContext = createContext<any>(0);
+export const CommentContext = createContext<any>(0);
 
 export const POST = (props: Props) => {
   const { user } = useAuthContext();
@@ -130,9 +131,9 @@ export const POST = (props: Props) => {
     dispatch({ type: "SHOW_LIKES" });
   }
 
-  // const ShowComments = () => {
-  //     setViewComments(!ViewComments);
-  // }
+  const ShowComments = () => {
+    dispatch({ type: "SHOW_COMMENTS" });
+  }
 
   return (
     <>
@@ -151,14 +152,17 @@ export const POST = (props: Props) => {
           <div className="Post-Description"><span className="Post-Text"> {pts.post.content} </span></div>
           <div className="Post-Details">
             <button className="Post-ViewBtns" onClick={ShowLikes} > {pts.likes.length} Likes</button>
-            <button className="Post-ViewBtns" > 0 Comments</button>
+            <button className="Post-ViewBtns" onClick={ShowComments} > {pts.comments.length} Comments</button>
           </div>
           <div className="Post-Buttons">
             <button onClick={!hasUserLiked ? addLike : removeLike} > {!hasUserLiked ? <>&#128077;</> : <>&#128078;</>}</button>
             <button > Comments </button>
           </div>
         </div>
-        {/* {ViewComments && <Comments post={post} />} */}
+        <CommentContext.Provider value={{ ShowComments, pts }} >
+           {state.ViewComments && <CommentComponent />}
+        </CommentContext.Provider>
+        
       </div>
     </>
   );

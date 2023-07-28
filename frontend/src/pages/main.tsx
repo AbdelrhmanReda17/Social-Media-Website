@@ -22,9 +22,19 @@ export interface Like {
   updatedAt: string;
   __v: number;
 }
+export interface Comment {
+  _id: string
+  userId: string
+  postId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 export interface FULLPOST {
   post: Post;
   likes: Like[];
+  comments : Comment[];
 }
 const Main = () => {
   const [PostsList, setPostsList] = useState<FULLPOST[] | null>(null);
@@ -34,12 +44,13 @@ const Main = () => {
       try {
         const PostsRes = await fetch('/posts' , { headers : {'Authorization': `Bearer ${user.token}`}});
         const posts: Post[] = await PostsRes.json();
-        const fullPostsData: { post: Post, likes: Like[] }[] = [];
+        const fullPostsData: FULLPOST[] = [];
         for (const post of posts) {
           const LikeRes = await fetch(`Likes/${post._id}` , { headers : {'Authorization': `Bearer ${user.token}`}} );
           const likes: Like[] = await LikeRes.json();
-          console.log(likes);
-          fullPostsData.push({ post, likes });
+          const CommentRes = await fetch(`Comments/${post._id}` , { headers : {'Authorization': `Bearer ${user.token}`}} );
+          const comments: Comment[] = await CommentRes.json();
+          fullPostsData.push({ post, likes , comments});
         }
         setPostsList(fullPostsData);
       } catch (error) {
@@ -50,6 +61,7 @@ const Main = () => {
         fetchPostsAndLikes();
     }    
   }, []);
+
 
   return (
     <div className="Main-Container">

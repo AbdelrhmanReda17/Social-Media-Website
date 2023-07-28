@@ -18,7 +18,6 @@ const getLikes = async (req, res) => {
   }else{
     LikeFail(res, "Invalid Like ID");
   }
-
 };
 
 // Create a new Like
