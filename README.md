@@ -8,6 +8,8 @@
 
 - **Like and Unlike Posts:** The platform incorporates a 'Like' feature, allowing users to appreciate posts. Users can also 'Unlike' posts to remove previous interactions.
 
+- **Add Comments and view other users Comments:** The platform incorporates a 'Comment' feature, enabling users to express their appreciation for posts.
+
 - **Timestamp for Posts:** Each post displays the time it was originally posted, giving users context and relevance for each piece of content.
 
 - **Responsive Design:** Website is built with a responsive design, allowing users to access the platform on various devices.
