@@ -6,6 +6,7 @@ import StartPost from "./startpost";
 import { useAuthContext } from "../hooks/userAuthContext";
 import { FieldError } from "react-hook-form";
 import { AppContext , Comment, Like } from "../pages/main";
+import ChoosePosts from "./chspost";
 
 interface createFormData {
     content: string
@@ -14,7 +15,7 @@ interface createFormData {
 export const CreatePost = () => {
     const { user } = useAuthContext();
     const formInput = useRef(null);
-    const { PostsList, setPostsList } = useContext(AppContext);
+    const { PostsList, setPostsList , MyPosts ,setMyPosts } = useContext(AppContext);
 
     const schema = yup.object().shape({
         content: yup.string().required("You must add a content"),
@@ -57,7 +58,6 @@ export const CreatePost = () => {
               });
             const createdPost = await NPOST.json();
             setPostsList((prevPostsList : any) => [{ post: createdPost.NewPost, likes: [] as Like[] , comments: [] as Comment[] } , ...prevPostsList ]);
-            console.log("ARARAr");
         } catch (error) {
             console.error("Error fetching Posts:", error);
         }
@@ -67,6 +67,7 @@ export const CreatePost = () => {
 
     return (
         <div>
+            <ChoosePosts MyPosts={MyPosts} setMyPosts={setMyPosts} />
             <StartPost changeDoPost={changeDoPost} />
             {doPost && (
                 <form

@@ -165,7 +165,7 @@ export const POST = (props: Props) => {
       </LikeContext.Provider>
       <div className="Post-Container">
         <div className="Post-Info">
-          <img src={PostUser?.user.photoURL || "user.jpg"} alt="ARAR" />
+          <img src={PostUser?.user.photoURL || "user.png"} alt="ARAR" />
           <div className="Post-InfoTexts">
             <p className="first">{pts.post.username}</p>
             <p className="last"> {getTimeDifferenceFromNow(pts.post.createdAt)} </p>

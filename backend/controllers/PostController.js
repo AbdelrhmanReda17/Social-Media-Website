@@ -11,15 +11,15 @@ const getPosts = async (req, res) => {
   res.status(200).json(posts);
 };
 
-// Get a single post
+// Get user posts
 const getPost = async (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    await Post.findById(req.params.id)
-      .then((workout) => {
-        res.status(200).json(workout);
+    await Post.find({userId : req.params.id})
+      .then((posts) => {
+        res.status(200).json(posts);
       })
       .catch(() => {
-        PostFail(res, "No post with this ID");
+        PostFail(res, "No post with for this user");
       });
   } else {
     PostFail(res, "Invalid ID");
@@ -29,7 +29,6 @@ const getPost = async (req, res) => {
 // Create a new post
 const createPost = async (req, res) => {
   const { userId, username, content } = req.body;
-  console.log( username , userId , content , req.body  );
   try {
     const NewPost = await Post.create({ userId, username, content });
     res.status(200).json({ NewPost });

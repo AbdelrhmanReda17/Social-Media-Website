@@ -38,11 +38,25 @@ export interface FULLPOST {
 }
 const Main = () => {
   const [PostsList, setPostsList] = useState<FULLPOST[] | null>(null);
+  const [ MyPosts , setMyPosts] = useState<boolean>(false);
   const { user } = useAuthContext();
   useEffect(() => {
+    console.log("AR AR " , MyPosts);
     const fetchPostsAndLikes = async () => {
       try {
-        const PostsRes = await fetch('/posts' , { headers : {'Authorization': `Bearer ${user.token}`}});
+        let PostsRes;          
+        const EmptyPosts: FULLPOST[] = []
+        setPostsList(EmptyPosts);
+        if (MyPosts) {
+
+          PostsRes = await fetch(`/posts/${user._id}`, {
+            headers: { Authorization: `Bearer ${user.token}` },
+          });
+        } else {
+          PostsRes = await fetch("/posts", {
+            headers: { Authorization: `Bearer ${user.token}` },
+          });
+        }
         const posts: Post[] = await PostsRes.json();
         const fullPostsData: FULLPOST[] = [];
         for (const post of posts) {
@@ -60,15 +74,14 @@ const Main = () => {
     if(user){
         fetchPostsAndLikes();
     }    
-  }, []);
-
+  }, [MyPosts , user]);
 
   return (
     <div className="Main-Container">
       <div>
       </div>
       <div className="Middle-Container">
-        <AppContext.Provider value={{ PostsList, setPostsList }} >
+        <AppContext.Provider value={{ PostsList, setPostsList , MyPosts, setMyPosts }} >
           <CreatePost />
           <div className="Posts-Container">
             {PostsList?.map((pts) => {

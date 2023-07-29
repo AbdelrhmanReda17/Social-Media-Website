@@ -9,7 +9,6 @@ const CommentFail = (res, errormsg) => {
 
 const getComments = async (req, res) => {
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-        console.log(req.params.id)
         await Comment.find({postId : req.params.id}).then((comments) => {
           res.status(200).json(comments);
         })
@@ -24,7 +23,6 @@ const getComments = async (req, res) => {
 // Create a new Comment
 const createComment = async (req, res) => {
     const { userId, postId , content } = req.body;
-    console.log(userId , postId , content);
     try {
       const newPost = await Comment.create({ userId, postId , content });
       res.status(200).json(newPost);
