@@ -1,4 +1,7 @@
 const Post = require("../models/postModel");
+const Comment = require("../models/commentModel");
+const Like = require("../models/likeModel");
+
 const mongoose = require("mongoose");
 
 const PostFail = (res, errormsg) => {
@@ -40,17 +43,28 @@ const createPost = async (req, res) => {
 // Delete a post
 const deletePost = async (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    await Post.findByIdAndDelete(req.params.id)
-      .then(() => {
-        res.status(200).json({ mssg: "Post deleted successfully" });
-      })
-      .catch(() => {
-        PostFail(res, "No post with this ID");
-      });
+    try {
+      const deletedPost = await Post.findByIdAndDelete(req.params.id);
+      
+      if (!deletedPost) {
+        return PostFail(res, "No post with this ID");
+      }
+
+      await Promise.all([
+        Comment.deleteMany({ postId: req.params.id }),
+        Like.deleteMany({ postId: req.params.id })
+      ]);
+
+      res.status(200).json({ mssg: "Post, likes, and comments deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      PostFail(res, "Error deleting post, likes, and comments");
+    }
   } else {
     PostFail(res, "Invalid ID");
   }
 };
+
 
 // Update a post
 const updatePost = async (req, res) => {

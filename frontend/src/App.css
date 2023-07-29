@@ -284,9 +284,15 @@ header a {
   transition-duration: 167ms;
   transition-property: background-color,box-shadow,color;
   font-weight: 600;
-
 }
-
+.Post-btns{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: space-between;
+  grid-gap: 10px;
+  margin-top: 5px;
+  margin-right: 5px;
+}
 .PostBtn:hover{
   background-color: #eeeeee;
   cursor: pointer;
@@ -307,8 +313,7 @@ header a {
 .Post-Info{
   display: grid;
   grid-gap: 15px;
-  grid-template-columns: 0fr 1fr;
-  align-items: center;
+  grid-template-columns: 0fr 1fr 0fr;
   justify-items: start;
 }
 .Post-Info img , .Post-Comments img{
@@ -400,8 +405,25 @@ header a {
   color: #a19f9f;
   margin: 0;
 }
-
-
+.Post-btns > button{
+  background: none;
+  outline: none;
+  border: none;
+  color: #001C30;
+  transition: letter-spacing 0.15s;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+}
+.Post-btns > button:hover{
+  border-radius: 25px;
+  background-color: #eeeeee;
+  cursor: pointer;
+  scale: 1.1;
+}
+.Post-btns > button:last-of-type{
+  transform: scale(1.5);
+}
 .Post-ViewBtns {
   color: #8c8989;
   background: white;

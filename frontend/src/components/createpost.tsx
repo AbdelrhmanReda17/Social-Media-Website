@@ -15,7 +15,7 @@ interface createFormData {
 export const CreatePost = () => {
     const { user } = useAuthContext();
     const formInput = useRef(null);
-    const { PostsList, setPostsList , MyPosts ,setMyPosts } = useContext(AppContext);
+    const { PostsList, setPostsList , MyPosts ,setMyPosts , isLoading } = useContext(AppContext);
 
     const schema = yup.object().shape({
         content: yup.string().required("You must add a content"),
@@ -67,7 +67,7 @@ export const CreatePost = () => {
 
     return (
         <div>
-            <ChoosePosts MyPosts={MyPosts} setMyPosts={setMyPosts} />
+            <ChoosePosts MyPosts={MyPosts} setMyPosts={setMyPosts} isLoading={isLoading} />
             <StartPost changeDoPost={changeDoPost} />
             {doPost && (
                 <form

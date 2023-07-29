@@ -4,7 +4,7 @@ import { useAuthContext } from "../hooks/userAuthContext";
 const ChoosePosts = (props: any) => {
     const { user } = useAuthContext();
     const [selectedOption, setSelectedOption] = useState<String>("for-you");
-
+    console.log(props.isLoading)
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedOption(event.target.value);
         console.log(selectedOption)
@@ -25,6 +25,7 @@ const ChoosePosts = (props: any) => {
                     value="for-you"
                     checked={selectedOption === "for-you"}
                     onChange={handleRadioChange}
+                    disabled={props.isLoading}
                 />
                 <label htmlFor="for-you">All Posts</label>
             </div>
@@ -36,6 +37,7 @@ const ChoosePosts = (props: any) => {
                     value="myposts"
                     checked={selectedOption === "myposts"}
                     onChange={handleRadioChange}
+                    disabled={props.isLoading}
                 />
                 <label htmlFor="myposts">My Posts</label>
             </div>

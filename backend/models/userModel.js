@@ -56,10 +56,11 @@ userSchema.statics.signup = async function (
 };
 
 userSchema.statics.signin = async function(email , password) {
+  console.log('signin', email, password);
     if (!email || !password) {
         throw Error("All Fields must be filled");
     }
-    const user = await this.findOne({ email: email });
+    const user = await this.findOne({email : email});
     if (!user) {
       throw Error("Email doesn't exists");
     }

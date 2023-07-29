@@ -3,6 +3,8 @@ import { AppContext, FULLPOST } from "../pages/main";
 import { ShowLikes as ShowLikesModel } from "./likemodel";
 import { useAuthContext } from "../hooks/userAuthContext";
 import { Comment as CommentComponent } from "./comment";
+import  UpdateComponent from './updatepost';
+
 interface Props {
   pts: FULLPOST;
 }
@@ -62,7 +64,9 @@ export const CommentContext = createContext<any>(0);
 export const POST = (props: Props) => {
   const { user } = useAuthContext();
   const [ PostUser , setPostUser ] = useState<any> ();
-  const { PostsList, setPostsList } = useContext(AppContext);  
+  const [ isUpdatePost , setIsUpdatePost ] = useState<boolean> (false);
+
+  const { PostsList, setPostsList , MyPosts } = useContext(AppContext);  
   const { pts } = props;
   useEffect(() => {
     const fetchUser = async () => {
@@ -150,6 +154,28 @@ export const POST = (props: Props) => {
     }
   };
 
+  const deletePost = async () =>{
+    try {
+      await fetch(`/posts/${pts.post._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+      }
+    );
+      setPostsList((prevPostsList : any) =>
+        prevPostsList.filter((post: FULLPOST) => post.post._id !== pts.post._id)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const updatePost = async () =>{
+    setIsUpdatePost(!isUpdatePost);
+  }
   const ShowLikes = () => {
     dispatch({ type: "SHOW_LIKES" });
   }
@@ -157,7 +183,7 @@ export const POST = (props: Props) => {
   const ShowComments = () => {
     dispatch({ type: "SHOW_COMMENTS" });
   }
-
+  
   return (
     <>
       <LikeContext.Provider value={{ ShowLikes, pts }}>
@@ -168,8 +194,20 @@ export const POST = (props: Props) => {
           <img src={PostUser?.user.photoURL || "user.png"} alt="ARAR" />
           <div className="Post-InfoTexts">
             <p className="first">{pts.post.username}</p>
-            <p className="last"> {getTimeDifferenceFromNow(pts.post.createdAt)} </p>
-          </div>
+            <p className="last">
+            {getTimeDifferenceFromNow(pts.post.createdAt)}
+            {pts.post.createdAt !== pts.post.updatedAt && " - Edited"}
+        </p>          
+        </div>
+          {
+            pts.post.userId === user._id && MyPosts ? (
+              <div className="Post-btns">
+                <button className="Post-delete" onClick={updatePost}> Edit </button>
+                <button className="Post-delete" onClick={deletePost}> &times; </button>
+                {isUpdatePost && <UpdateComponent updatePost={updatePost} post={pts.post} setPostsList={setPostsList} /> }
+              </div>
+            ) : null
+          }
         </div>
         <div className="Post-Content">
           <div className="Post-Description"><span className="Post-Text"> {pts.post.content} </span></div>

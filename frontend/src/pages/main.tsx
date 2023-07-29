@@ -34,21 +34,22 @@ export interface Comment {
 export interface FULLPOST {
   post: Post;
   likes: Like[];
-  comments : Comment[];
+  comments: Comment[];
 }
 const Main = () => {
   const [PostsList, setPostsList] = useState<FULLPOST[] | null>(null);
-  const [ MyPosts , setMyPosts] = useState<boolean>(false);
+  const [MyPosts, setMyPosts] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const { user } = useAuthContext();
   useEffect(() => {
-    console.log("AR AR " , MyPosts);
+    console.log("AR AR ", MyPosts);
     const fetchPostsAndLikes = async () => {
       try {
-        let PostsRes;          
+        let PostsRes;
         const EmptyPosts: FULLPOST[] = []
         setPostsList(EmptyPosts);
         if (MyPosts) {
-
           PostsRes = await fetch(`/posts/${user._id}`, {
             headers: { Authorization: `Bearer ${user.token}` },
           });
@@ -57,31 +58,36 @@ const Main = () => {
             headers: { Authorization: `Bearer ${user.token}` },
           });
         }
-        const posts: Post[] = await PostsRes.json();
-        const fullPostsData: FULLPOST[] = [];
-        for (const post of posts) {
-          const LikeRes = await fetch(`Likes/${post._id}` , { headers : {'Authorization': `Bearer ${user.token}`}} );
-          const likes: Like[] = await LikeRes.json();
-          const CommentRes = await fetch(`Comments/${post._id}` , { headers : {'Authorization': `Bearer ${user.token}`}} );
-          const comments: Comment[] = await CommentRes.json();
-          fullPostsData.push({ post, likes , comments});
+        if (PostsRes.ok) {
+          const posts: Post[] = await PostsRes.json();
+          const fullPostsData: FULLPOST[] = [];
+          for (const post of posts) {
+            const LikeRes = await fetch(`Likes/${post._id}`, { headers: { 'Authorization': `Bearer ${user.token}` } });
+            const likes: Like[] = await LikeRes.json();
+            const CommentRes = await fetch(`Comments/${post._id}`, { headers: { 'Authorization': `Bearer ${user.token}` } });
+            const comments: Comment[] = await CommentRes.json();
+            fullPostsData.push({ post, likes, comments });
+          }
+          setPostsList(fullPostsData);
         }
-        setPostsList(fullPostsData);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false); // Set isLoading to false after fetching and processing the data
       }
     };
-    if(user){
-        fetchPostsAndLikes();
-    }    
-  }, [MyPosts , user]);
+    if (user) {
+      setIsLoading(true);
+      fetchPostsAndLikes();
+    }
+  }, [MyPosts, user]);
 
   return (
     <div className="Main-Container">
       <div>
       </div>
       <div className="Middle-Container">
-        <AppContext.Provider value={{ PostsList, setPostsList , MyPosts, setMyPosts }} >
+        <AppContext.Provider value={{ PostsList, setPostsList, MyPosts, setMyPosts, isLoading }} >
           <CreatePost />
           <div className="Posts-Container">
             {PostsList?.map((pts) => {
